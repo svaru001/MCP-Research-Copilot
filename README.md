@@ -1,6 +1,6 @@
 # MCP Server 
 
-A comprehensive demonstration of Model Context Protocol (MCP) servers showcasing real-world integrations with PostgreSQL, financial data APIs, and vector databases.
+An MVP Repository that connects to Model Context Protocol (MCP) servers that showcase real-world integrations with financial data APIs, and vector databases.
 
 ## 🚀 Overview
 
@@ -279,11 +279,6 @@ results = semantic_search("documents", "programming languages", 3)
 stats = index_stats("documents")
 ```
 
-## 🛡️ Security Notes
-
-- **API Keys**: The project contains hardcoded API keys for demonstration purposes. In production, use environment variables or secure key management.
-- **Database Credentials**: PostgreSQL credentials are hardcoded and should be moved to environment variables.
-- **Rate Limiting**: Be aware of API rate limits when using external services.
 
 ## 📝 Dependencies
 
