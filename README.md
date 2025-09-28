@@ -279,7 +279,6 @@ results = semantic_search("documents", "programming languages", 3)
 stats = index_stats("documents")
 ```
 
-
 ## 📝 Dependencies
 
 - `httpx>=0.28.1` - HTTP client for API requests
@@ -290,28 +289,13 @@ stats = index_stats("documents")
 - `torch>=2.8.0` - PyTorch for ML models
 - `transformers>=4.56.2` - Hugging Face transformers
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is for demonstration purposes. Please ensure you have appropriate licenses for any external services used.
-
-## 🆘 Support
-
-For issues and questions:
-1. Check the existing issues
-2. Create a new issue with detailed description
-3. Include error logs and system information
 
 ## 🔄 Updates
 
-- **v0.1.0**: Initial release with PostgreSQL, Share Price, and Pinecone MCP servers
+- **v0.1.0**: Initial release with Share Price API, and Pinecone MCP servers
 - Features real-time financial data, vector database operations, and database integration
 - Supports multiple time intervals for financial analysis
 - Includes comprehensive error handling and logging
+
+## 🔄 Demo Video
+[![Watch the video](https://img.youtube.com/vi/bFzy1jA4Ucs/0.jpg)](https://youtu.be/bFzy1jA4Ucs)
