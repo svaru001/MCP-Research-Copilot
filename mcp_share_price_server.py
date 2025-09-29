@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("share-price-server")
 
 # API configuration
-API_KEY = "bb83738c78msh922834f4b8a9336p1a9e66jsna220fb24400d"
+API_KEY = ""
 BASE_URL = "https://bb-finance.p.rapidapi.com/market/get-compact"
 CHART_URL = "https://bb-finance.p.rapidapi.com/market/get-price-chart"
 HEADERS = {
