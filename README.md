@@ -60,7 +60,7 @@ Requires a Pinecone API key and uses the following defaults:
 ## 🧠 Claude Desktop Integration with MCP Servers
 <img width="2610" height="1401" alt="image" src="https://github.com/user-attachments/assets/fc398735-282c-4485-a432-46c1ae2deba5" />
 
-## 📹 Example Prompt
+### 💬 Example Prompt
 <img width="1320" height="1006" alt="image" src="https://github.com/user-attachments/assets/c87a1e99-3ceb-4aba-b573-6fb18ed183a1" />
 
 ## 📹 Demo Video
