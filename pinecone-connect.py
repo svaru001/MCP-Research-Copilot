@@ -38,7 +38,7 @@ def initialize_pinecone():
     global pinecone_client, embedding_model
     
     # Initialize Pinecone client
-    pinecone_api_key = "pcsk_4LJQhY_3D2MZDZEk7eisKJDXwL8tZg3WeKsB5E3qxXa4uw6NtNnkbjqS7LBhsEEabffwjL"
+    pinecone_api_key = ""
     if not pinecone_api_key:
         logger.error("PINECONE_API_KEY environment variable not set")
         raise ValueError("PINECONE_API_KEY is required")
