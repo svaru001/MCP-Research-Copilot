@@ -1,4 +1,4 @@
-# MCP Server 
+# MCP Research Copilot 
 
 An MVP Repository that connects to Model Context Protocol (MCP) servers that showcase real-world integrations with financial data APIs, and vector databases.
 
