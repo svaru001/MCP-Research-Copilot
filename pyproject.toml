@@ -1,9 +1,20 @@
 [project]
 name = "mcp-server-demo-test"
 version = "0.1.0"
-description = "Add your description here"
+description = "Production-ready MCP servers for financial data and vector database operations"
 readme = "README.md"
 requires-python = ">=3.13"
+authors = [
+    {name = "MCP Server Team", email = "team@example.com"}
+]
+keywords = ["mcp", "financial-data", "vector-database", "pinecone", "api"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.15.0",
@@ -12,4 +23,22 @@ dependencies = [
     "sentence-transformers>=5.1.1",
     "torch>=2.8.0",
     "transformers>=4.56.2",
+    "python-dotenv>=1.0.0",
 ]
+
+[project.scripts]
+mcp-share-price = "run_share_price:main"
+mcp-pinecone = "run_pinecone:main"
+mcp-server = "main:main"
+
+[project.urls]
+Homepage = "https://github.com/your-org/mcp-server-demo"
+Repository = "https://github.com/your-org/mcp-server-demo.git"
+Issues = "https://github.com/your-org/mcp-server-demo/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

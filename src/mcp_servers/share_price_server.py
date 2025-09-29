@@ -17,17 +17,16 @@ except ImportError as e:
     print("Please install MCP with: uv add mcp")
     exit(1)
 
+from ..config import settings
+
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
 logger = logging.getLogger("share-price-server")
 
 # API configuration
-API_KEY = "bb83738c78msh922834f4b8a9336p1a9e66jsna220fb24400d"
-BASE_URL = "https://bb-finance.p.rapidapi.com/market/get-compact"
-CHART_URL = "https://bb-finance.p.rapidapi.com/market/get-price-chart"
 HEADERS = {
     'x-rapidapi-host': 'bb-finance.p.rapidapi.com',
-    'x-rapidapi-key': API_KEY
+    'x-rapidapi-key': settings.BB_FINANCE_API_KEY
 }
 
 # Create FastMCP server instance
@@ -39,7 +38,7 @@ async def fetch_share_price(symbol: str) -> Optional[Dict[str, Any]]:
         async with httpx.AsyncClient() as client:
             params = {"id": symbol}
             response = await client.get(
-                BASE_URL,
+                settings.BB_FINANCE_BASE_URL,
                 params=params,
                 headers=HEADERS,
                 timeout=10.0
@@ -80,7 +79,7 @@ async def fetch_price_chart(symbol: str, interval: str = "m3") -> Optional[Dict[
                 "interval": interval
             }
             response = await client.get(
-                CHART_URL,
+                settings.BB_FINANCE_CHART_URL,
                 params=params,
                 headers=HEADERS,
                 timeout=15.0
@@ -272,6 +271,8 @@ def compare_performance(analyses: List[Dict[str, Any]]) -> str:
         formatted += f"   Range: ${analysis['min_price']} - ${analysis['max_price']}\n\n"
     
     return formatted
+
+def format_comparison(comparison_data: List[tuple]) -> str:
     """Format comparison data for multiple stocks"""
     try:
         formatted = "📊 **STOCK COMPARISON**\n"
@@ -562,6 +563,16 @@ async def get_price_data_resource() -> str:
     Example symbols: aapl:us, tsla:us, msft:us, googl:us
     """
 
+def run_server():
+    """Run the share price server"""
+    try:
+        settings.validate()
+        mcp.run()
+    except ValueError as e:
+        logger.error(f"Configuration error: {e}")
+        print(f"Configuration error: {e}")
+        print("Please check your .env file and ensure all required variables are set.")
+        exit(1)
+
 if __name__ == "__main__":
-    # Run the server
-    mcp.run()
+    run_server()

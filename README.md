@@ -1,6 +1,6 @@
-# MCP Server 
+# MCP Server Production Ready
 
-An MVP Repository that connects to Model Context Protocol (MCP) servers that showcase real-world integrations with financial data APIs, and vector databases.
+A production-ready repository that connects to Model Context Protocol (MCP) servers showcasing real-world integrations with financial data APIs and vector databases.
 
 ## 🚀 Overview
 
@@ -9,13 +9,43 @@ This project contains 2 distinct MCP servers that demonstrate different types of
 1. **Share Price MCP Server** - Real-time financial data and market analysis
 2. **Pinecone Vector Database MCP Server** - Vector storage and semantic search capabilities
 
+## 📁 Project Structure
+
+```
+mcp-server-demo/
+├── src/
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py          # Configuration management
+│   └── mcp_servers/
+│       ├── __init__.py
+│       ├── share_price_server.py    # Share price MCP server
+│       └── pinecone_server.py       # Pinecone MCP server
+├── tests/                        # Test files
+├── docs/                         # Documentation
+├── main.py                       # Main entry point
+├── run_share_price.py           # Share price server launcher
+├── run_pinecone.py              # Pinecone server launcher
+├── .env.example                 # Environment variables template
+├── .gitignore                   # Git ignore rules
+├── requirements.txt             # Python dependencies
+├── pyproject.toml              # Project configuration
+├── Dockerfile                   # Docker configuration
+├── docker-compose.yml          # Docker Compose setup
+├── deploy.sh                    # Production deployment script
+└── setup_dev.sh                # Development setup script
+```
+
 ## 📋 Prerequisites
 
 - Python 3.13 or higher
-- [uv](https://docs.astral.sh/uv/) package manager
+- [uv](https://docs.astral.sh/uv/) package manager (for development)
+- Docker and Docker Compose (for production)
 - API keys for external services (see Configuration section)
 
-## 🛠️ Installation
+## 🛠️ Quick Start
+
+### Development Setup
 
 1. **Clone the repository:**
    ```bash
@@ -23,56 +53,128 @@ This project contains 2 distinct MCP servers that demonstrate different types of
    cd mcp-server-demo-test
    ```
 
-2. **Install dependencies using uv:**
+2. **Run the development setup:**
    ```bash
-   uv sync
+   ./setup_dev.sh
    ```
 
-3. **Set up environment variables:**
+3. **Configure environment variables:**
    ```bash
-   # For Pinecone integration
-   export PINECONE_API_KEY="your_pinecone_api_key"
+   # Edit .env file with your API keys
+   nano .env
+   ```
+
+4. **Run individual servers:**
+   ```bash
+   # Share Price Server
+   python run_share_price.py
    
-   # For embedding model (optional, defaults to all-MiniLM-L6-v2)
-   export EMBEDDING_MODEL="all-MiniLM-L6-v2"
+   # Pinecone Server
+   python run_pinecone.py
+   
+   # Or use the main launcher
+   python main.py share-price
+   python main.py pinecone
+   ```
+
+### Production Deployment
+
+1. **Configure environment variables:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your production API keys
+   ```
+
+2. **Deploy with Docker:**
+   ```bash
+   ./deploy.sh
+   ```
+
+3. **Or manually with Docker Compose:**
+   ```bash
+   docker-compose up -d
    ```
 
 ## 🔧 Configuration
 
+All configuration is managed through environment variables. Copy `.env.example` to `.env` and configure your settings:
+
+### Environment Variables
+
+```bash
+# BB Finance API Configuration
+BB_FINANCE_API_KEY=your_bb_finance_api_key_here
+BB_FINANCE_BASE_URL=https://bb-finance.p.rapidapi.com/market/get-compact
+BB_FINANCE_CHART_URL=https://bb-finance.p.rapidapi.com/market/get-price-chart
+
+# Pinecone Configuration
+PINECONE_API_KEY=your_pinecone_api_key_here
+PINECONE_DEFAULT_INDEX=mcp-vectors
+PINECONE_DEFAULT_DIMENSION=384
+PINECONE_DEFAULT_METRIC=cosine
+PINECONE_CLOUD=aws
+PINECONE_REGION=us-east-1
+
+# Embedding Model Configuration
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+
+# Logging Configuration
+LOG_LEVEL=INFO
+
+# Server Configuration
+SERVER_HOST=localhost
+SERVER_PORT=8000
+```
 
 ### Share Price Server
-Uses BB Finance API with the following configuration:
-- API Key: ``
-- Base URL: `https://bb-finance.p.rapidapi.com/market/get-compact`
-- Chart URL: `https://bb-finance.p.rapidapi.com/market/get-price-chart`
+Uses BB Finance API with configurable endpoints and API keys.
 
 ### Pinecone Server
-Requires a Pinecone API key and uses the following defaults:
-- Default Index: `mcp-vectors`
-- Default Dimension: `384`
-- Default Metric: `cosine`
-- Cloud: `AWS us-east-1`
+Requires a Pinecone API key with configurable index settings and cloud region.
 
 ## 🚀 Running the Servers
 
-### 1. PostgreSQL MCP Server
+### Development Mode
+
+#### Share Price MCP Server
 ```bash
-python main.py
+# Using individual launcher
+python run_share_price.py
+
+# Using main launcher
+python main.py share-price
 ```
 
-**Available Tools:**
-- `query_postgres(sql: str)` - Execute SQL queries on PostgreSQL database
-
-**Example Usage:**
-```python
-# Get all accounts
-query_postgres("SELECT * FROM accounts LIMIT 5;")
-```
-
-### 2. Share Price MCP Server
+#### Pinecone MCP Server
 ```bash
-python mcp_share_price_server.py
+# Using individual launcher
+python run_pinecone.py
+
+# Using main launcher
+python main.py pinecone
 ```
+
+### Production Mode
+
+#### Using Docker Compose
+```bash
+# Start both servers
+docker-compose up -d
+
+# Start individual servers
+docker-compose up -d share-price-server
+docker-compose up -d pinecone-server
+```
+
+#### Using Docker
+```bash
+# Build and run individual containers
+docker build -t mcp-server .
+docker run -p 8001:8000 --env-file .env mcp-server python run_share_price.py
+docker run -p 8002:8000 --env-file .env mcp-server python run_pinecone.py
+```
+
+### 1. Share Price MCP Server
 
 **Architecture**
 <img width="1009" height="647" alt="image" src="https://github.com/user-attachments/assets/7df7f35c-209b-4d1a-9046-210069e67efa" />
@@ -152,9 +254,13 @@ get_market_summary(["aapl:us", "tsla:us", "msft:us", "googl:us"])
 **Available Resources:**
 - `share://price-data` - Real-time share price information resource
 
-### 3. Pinecone Vector Database MCP Server
+### 2. Pinecone Vector Database MCP Server
 ```bash
-python pinecone-connect.py
+# Development
+python run_pinecone.py
+
+# Production
+docker-compose up -d pinecone-server
 ```
 
 **Available Tools:**
@@ -283,6 +389,55 @@ results = semantic_search("documents", "programming languages", 3)
 stats = index_stats("documents")
 ```
 
+## 🚀 Production Deployment
+
+### Docker Deployment
+
+The project includes Docker and Docker Compose configurations for easy production deployment:
+
+```bash
+# Quick deployment
+./deploy.sh
+
+# Manual deployment
+docker-compose up -d
+```
+
+### Environment Setup
+
+1. **Copy environment template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure your API keys:**
+   ```bash
+   nano .env
+   ```
+
+3. **Deploy:**
+   ```bash
+   ./deploy.sh
+   ```
+
+### Monitoring
+
+- **Logs:** `docker-compose logs -f`
+- **Status:** `docker-compose ps`
+- **Restart:** `docker-compose restart`
+
+### Scaling
+
+To run multiple instances:
+
+```bash
+# Scale share price server
+docker-compose up -d --scale share-price-server=3
+
+# Scale pinecone server
+docker-compose up -d --scale pinecone-server=2
+```
+
 ## 📝 Dependencies
 
 - `httpx>=0.28.1` - HTTP client for API requests
@@ -292,6 +447,7 @@ stats = index_stats("documents")
 - `sentence-transformers>=5.1.1` - Text embedding models
 - `torch>=2.8.0` - PyTorch for ML models
 - `transformers>=4.56.2` - Hugging Face transformers
+- `python-dotenv>=1.0.0` - Environment variable management
 
 
 ## 🔄 Updates

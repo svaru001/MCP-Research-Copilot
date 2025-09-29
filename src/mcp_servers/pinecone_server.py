@@ -20,8 +20,10 @@ from sentence_transformers import SentenceTransformer
 # FastMCP imports
 from mcp.server.fastmcp import FastMCP
 
+from ..config import settings
+
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
 logger = logging.getLogger("pinecone-fastmcp-server")
 
 # Create FastMCP server instance
@@ -30,26 +32,22 @@ mcp = FastMCP("Pinecone Vector Database Server")
 # Global variables for Pinecone setup
 pinecone_client = None
 embedding_model = None
-default_index_name = "mcp-vectors"
-default_dimension = 384
 
 def initialize_pinecone():
     """Initialize Pinecone client and embedding model"""
     global pinecone_client, embedding_model
     
     # Initialize Pinecone client
-    pinecone_api_key = "pcsk_4LJQhY_3D2MZDZEk7eisKJDXwL8tZg3WeKsB5E3qxXa4uw6NtNnkbjqS7LBhsEEabffwjL"
-    if not pinecone_api_key:
+    if not settings.PINECONE_API_KEY:
         logger.error("PINECONE_API_KEY environment variable not set")
         raise ValueError("PINECONE_API_KEY is required")
     
-    pinecone_client = Pinecone(api_key=pinecone_api_key)
+    pinecone_client = Pinecone(api_key=settings.PINECONE_API_KEY)
     
     # Initialize embedding model
-    embedding_model_name = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
     try:
-        embedding_model = SentenceTransformer(embedding_model_name)
-        logger.info(f"Loaded embedding model: {embedding_model_name}")
+        embedding_model = SentenceTransformer(settings.EMBEDDING_MODEL)
+        logger.info(f"Loaded embedding model: {settings.EMBEDDING_MODEL}")
     except Exception as e:
         logger.error(f"Failed to load embedding model: {e}")
         embedding_model = None
@@ -87,15 +85,19 @@ async def get_index_stats_resource(index_name: str) -> str:
         return f"Error: {str(e)}"
 
 @mcp.tool()
-async def create_index(name: str, dimension: int = 384, metric: str = "cosine") -> str:
+async def create_index(name: str, dimension: int = None, metric: str = None) -> str:
     """Create a new Pinecone index
     
     Args:
         name: Index name
-        dimension: Vector dimension (default: 384)
-        metric: Distance metric (cosine, euclidean, dotproduct)
+        dimension: Vector dimension (default: from settings)
+        metric: Distance metric (cosine, euclidean, dotproduct) (default: from settings)
     """
     try:
+        # Use settings defaults if not provided
+        dimension = dimension or settings.PINECONE_DEFAULT_DIMENSION
+        metric = metric or settings.PINECONE_DEFAULT_METRIC
+        
         # Check if index already exists
         existing_indexes = [idx.name for idx in pinecone_client.list_indexes()]
         if name in existing_indexes:
@@ -107,8 +109,8 @@ async def create_index(name: str, dimension: int = 384, metric: str = "cosine") 
             dimension=dimension,
             metric=metric,
             spec=ServerlessSpec(
-                cloud="aws",
-                region="us-east-1"
+                cloud=settings.PINECONE_CLOUD,
+                region=settings.PINECONE_REGION
             )
         )
         
@@ -383,5 +385,16 @@ async def index_stats(index_name: str) -> str:
     except Exception as e:
         return f"Error getting index stats: {str(e)}"
 
+def run_server():
+    """Run the Pinecone server"""
+    try:
+        settings.validate()
+        mcp.run()
+    except ValueError as e:
+        logger.error(f"Configuration error: {e}")
+        print(f"Configuration error: {e}")
+        print("Please check your .env file and ensure all required variables are set.")
+        exit(1)
+
 if __name__ == "__main__":
-    mcp.run()
+    run_server()
