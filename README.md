@@ -1,4 +1,4 @@
-# MCP Server Production Ready
+# MCP Server
 
 A production-ready repository that connects to Model Context Protocol (MCP) servers showcasing real-world integrations with financial data APIs and vector databases.
 
