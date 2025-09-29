@@ -74,6 +74,10 @@ query_postgres("SELECT * FROM accounts LIMIT 5;")
 python mcp_share_price_server.py
 ```
 
+**Architecture**
+<img width="1009" height="647" alt="image" src="https://github.com/user-attachments/assets/7df7f35c-209b-4d1a-9046-210069e67efa" />
+
+
 **Available Tools:**
 
 #### `get_share_price(symbol: str)`
