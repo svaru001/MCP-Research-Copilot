@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# MCP Server
-=======
 # MCP Server 
->>>>>>> parent of 56c3764 (Refactored Code)
 
 An MVP Repository that connects to Model Context Protocol (MCP) servers that showcase real-world integrations with financial data APIs, and vector databases.
 
@@ -11,7 +7,8 @@ An MVP Repository that connects to Model Context Protocol (MCP) servers that sho
 This project contains 2 distinct MCP servers that demonstrate different types of integrations:
 
 1. **Share Price MCP Server** - Real-time financial data and market analysis
-2. **Pinecone Vector Database MCP Server** - Vector storage and semantic search capabilities
+2. **Exchange Announcements / Earnings Pinecone Vector Database MCP Server** - Vector storage and semantic search capabilities
+3. **Company Research Pinecone Vector Database MCP Server** - Vector storage and semantic search capabilities
 
 ## 📋 Prerequisites
 
@@ -57,30 +54,72 @@ Requires a Pinecone API key and uses the following defaults:
 - Default Metric: `cosine`
 - Cloud: `AWS us-east-1`
 
-## 🚀 Running the Servers
-
-### 1. PostgreSQL MCP Server
-```bash
-python main.py
-```
-
-**Available Tools:**
-- `query_postgres(sql: str)` - Execute SQL queries on PostgreSQL database
-
-**Example Usage:**
-```python
-# Get all accounts
-query_postgres("SELECT * FROM accounts LIMIT 5;")
-```
-
-### 2. Share Price MCP Server
-```bash
-python mcp_share_price_server.py
-```
-
 **Architecture**
 <img width="1009" height="647" alt="image" src="https://github.com/user-attachments/assets/7df7f35c-209b-4d1a-9046-210069e67efa" />
 
+## 🧠 Claude Desktop Integration with MCP Servers
+<img width="2610" height="1401" alt="image" src="https://github.com/user-attachments/assets/fc398735-282c-4485-a432-46c1ae2deba5" />
+
+## 📹 Example Prompt
+<img width="1320" height="1006" alt="image" src="https://github.com/user-attachments/assets/c87a1e99-3ceb-4aba-b573-6fb18ed183a1" />
+
+## 📹 Demo Video
+[![Watch the video](https://img.youtube.com/vi/bFzy1jA4Ucs/0.jpg)](https://youtu.be/bFzy1jA4Ucs)
+
+## 📊 Use Cases
+
+### Financial Analysis
+- **Real-time Market Data**: Get current stock prices, volume, and market metrics
+- **Technical Analysis**: Analyze price trends, volatility, and support/resistance levels
+- **Portfolio Comparison**: Compare performance across multiple stocks
+- **Risk Assessment**: Evaluate stock volatility and risk metrics
+
+### Vector Database Operations
+- **Semantic Search**: Find similar content using natural language queries
+- **Document Storage**: Store and retrieve text documents with metadata
+- **Knowledge Management**: Build searchable knowledge bases
+- **Recommendation Systems**: Create content recommendation engines
+
+### Database Integration
+- **Data Querying**: Execute SQL queries on PostgreSQL databases
+- **Data Analysis**: Perform complex database operations
+- **Reporting**: Generate reports from database data
+
+## 🔍 Example Workflows
+
+### 1. Stock Market Analysis Workflow
+```python
+# Get current price
+price_data = get_share_price("aapl:us")
+
+# Analyze 3-month performance
+chart_analysis = get_price_chart_analysis("aapl:us", "m3")
+
+# Compare with competitors
+comparison = compare_stock_performance(["aapl:us", "msft:us", "googl:us"], "m3")
+
+# Check volatility
+volatility = analyze_stock_volatility("aapl:us", "m1")
+```
+
+### 2. Vector Database Workflow
+```python
+# Create an index
+create_index("documents", 384, "cosine")
+
+# Add documents
+upsert_vectors(
+    "documents",
+    ["Python is a programming language", "Machine learning uses algorithms"],
+    [{"type": "programming"}, {"type": "ai"}]
+)
+
+# Search for similar content
+results = semantic_search("documents", "programming languages", 3)
+
+# Get statistics
+stats = index_stats("documents")
+```
 
 **Available Tools:**
 
@@ -232,60 +271,6 @@ index_stats("my-vectors")
 - `pinecone://indexes` - List all Pinecone indexes
 - `pinecone://index/{index_name}` - Get statistics for a specific index
 
-## 📊 Use Cases
-
-### Financial Analysis
-- **Real-time Market Data**: Get current stock prices, volume, and market metrics
-- **Technical Analysis**: Analyze price trends, volatility, and support/resistance levels
-- **Portfolio Comparison**: Compare performance across multiple stocks
-- **Risk Assessment**: Evaluate stock volatility and risk metrics
-
-### Vector Database Operations
-- **Semantic Search**: Find similar content using natural language queries
-- **Document Storage**: Store and retrieve text documents with metadata
-- **Knowledge Management**: Build searchable knowledge bases
-- **Recommendation Systems**: Create content recommendation engines
-
-### Database Integration
-- **Data Querying**: Execute SQL queries on PostgreSQL databases
-- **Data Analysis**: Perform complex database operations
-- **Reporting**: Generate reports from database data
-
-## 🔍 Example Workflows
-
-### 1. Stock Market Analysis Workflow
-```python
-# Get current price
-price_data = get_share_price("aapl:us")
-
-# Analyze 3-month performance
-chart_analysis = get_price_chart_analysis("aapl:us", "m3")
-
-# Compare with competitors
-comparison = compare_stock_performance(["aapl:us", "msft:us", "googl:us"], "m3")
-
-# Check volatility
-volatility = analyze_stock_volatility("aapl:us", "m1")
-```
-
-### 2. Vector Database Workflow
-```python
-# Create an index
-create_index("documents", 384, "cosine")
-
-# Add documents
-upsert_vectors(
-    "documents",
-    ["Python is a programming language", "Machine learning uses algorithms"],
-    [{"type": "programming"}, {"type": "ai"}]
-)
-
-# Search for similar content
-results = semantic_search("documents", "programming languages", 3)
-
-# Get statistics
-stats = index_stats("documents")
-```
 
 ## 📝 Dependencies
 
@@ -305,5 +290,3 @@ stats = index_stats("documents")
 - Supports multiple time intervals for financial analysis
 - Includes comprehensive error handling and logging
 
-## 🔄 Demo Video
-[![Watch the video](https://img.youtube.com/vi/bFzy1jA4Ucs/0.jpg)](https://youtu.be/bFzy1jA4Ucs)
